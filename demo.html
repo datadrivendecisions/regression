@@ -6,28 +6,55 @@
     <title>Linear Regression Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-<body class="flex flex-col items-center justify-center h-screen p-5 bg-gray-100">
+<body class="flex h-screen p-5 bg-gray-100">
 
-    <h1 class="text-3xl font-bold mb-5">Linear Regression Visualization</h1>
-    
-    <div id="chartContainer" class="w-4/5 h-3/5 mb-5">
-        <canvas id="chart"></canvas>
+    <!-- Sidebar -->
+    <div class="w-1/4 p-4 bg-white rounded shadow-md overflow-auto">
+        <h2 class="text-2xl font-bold mb-2">Understanding Linear Regression</h2>
+        <p class="mb-2">Linear regression is a statistical method to model the relationship between a dependent variable \( y \) and one or more independent variables \( x \). The simplest form, called simple linear regression, involves a single independent variable.</p>
+        <p class="mb-2">The equation of a simple linear regression line is given by:</p>
+        <p class="mb-2 text-center font-mono">\( y = mx + b \)</p>
+        <p class="mb-2">where:</p>
+        <ul class="list-disc list-inside mb-2">
+            <li>\( y \) is the dependent variable</li>
+            <li>\( x \) is the independent variable</li>
+            <li>\( m \) is the slope of the line (the rate of change of \( y \) with respect to \( x \))</li>
+            <li>\( b \) is the y-intercept (the value of \( y \) when \( x = 0 \))</li>
+        </ul>
+        <p class="mb-2">The goal of linear regression is to find the best-fitting line through the data points. This line minimizes the sum of the squared differences (errors) between the observed values and the predicted values. This method is known as the "least squares" method.</p>
+        <p class="mb-2">The quality of the fit can be measured using the R-squared value, which indicates the proportion of the variance in the dependent variable that is predictable from the independent variable. An R-squared value closer to 1 indicates a better fit.</p>
+        <p class="mb-2">Mean Squared Error (MSE) is another metric used to evaluate the performance of the regression model. It is the average of the squared differences between the observed values and the predicted values. Lower MSE values indicate better fit.</p>
+        <p class="mb-2">R-squared is calculated as:</p>
+        <p class="mb-2 text-center font-mono">\( R^2 = 1 - \frac{\text{MSE}_{\text{r}}}{\text{MSE}_{\text{b}}} \)</p>
+        <p class="mb-2">where \(\text{MSE}_{\text{r}}\) is the Mean Squared Error of the regression model and \(\text{MSE}_{\text{b}}\) is the Mean Squared Error of the base model, which uses the mean of the observed values as the predictor.</p>
     </div>
-    
-    <div id="controls" class="flex flex-col items-center space-y-4">
-        <div class="flex flex-col items-center">
-            <input type="range" id="slopeControl" class="slider w-80 mb-2" min="-2" max="2" step="0.1" value="1">
-            <div class="text-lg">Slope: <span id="slopeValue" class="font-semibold">1</span></div>
+
+    <!-- Main Content -->
+    <div class="flex flex-col items-center justify-center w-3/4 h-full p-5">
+        <h1 class="text-3xl font-bold mb-5">Linear Regression Visualization</h1>
+        
+        <div id="chartContainer" class="w-full h-3/5 mb-5">
+            <canvas id="chart"></canvas>
         </div>
-        <div class="flex flex-col items-center">
-            <input type="range" id="noiseControl" class="slider w-80 mb-2" min="0" max="0.5" step="0.01" value="0.1">
-            <div class="text-lg">Noise: <span id="noiseValue" class="font-semibold">0.1</span></div>
-        </div>
-        <div id="stats" class="text-lg">
-            <div title="R-squared indicates the proportion of the variance in the dependent variable that is predictable from the independent variable.">R-squared: <span id="rSquared" class="font-semibold">0</span></div>
-            <div title="Mean Squared Error (MSE) of the Regression Model measures the average of the squares of the errors between observed and predicted values.">MSE (Regression Model): <span id="mse" class="font-semibold">0</span></div>
-            <div title="Mean Squared Error (MSE) of the Base Model measures the average of the squares of the errors between observed values and the mean of those values.">MSE (Base Model): <span id="mseMean" class="font-semibold">0</span></div>
+        
+        <div id="controls" class="flex flex-col items-center space-y-4 mb-5">
+            <div class="flex flex-col items-center">
+                <input type="range" id="slopeControl" class="slider w-80 mb-2" min="-2" max="2" step="0.1" value="1">
+                <div class="text-lg">Slope: <span id="slopeValue" class="font-semibold">1</span></div>
+            </div>
+            <div class="flex flex-col items-center">
+                <input type="range" id="noiseControl" class="slider w-80 mb-2" min="0" max="0.5" step="0.01" value="0.1">
+                <div class="text-lg">Noise: <span id="noiseValue" class="font-semibold">0.1</span></div>
+            </div>
+            <button id="resetButton" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded">Reset</button>
+            <div id="stats" class="text-lg mt-3">
+                <div title="R-squared indicates the proportion of the variance in the dependent variable that is predictable from the independent variable.">R-squared: <span id="rSquared" class="font-semibold">0</span></div>
+                <div title="Mean Squared Error (MSE) of the Regression Model measures the average of the squares of the errors between observed and predicted values.">MSE (Regression Model): <span id="mse" class="font-semibold">0</span></div>
+                <div title="Mean Squared Error (MSE) of the Base Model measures the average of the squares of the errors between observed values and the mean of those values.">MSE (Base Model): <span id="mseMean" class="font-semibold">0</span></div>
+            </div>
         </div>
     </div>
 
@@ -81,6 +108,19 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return `(${tooltipItem.parsed.x.toFixed(2)}, ${tooltipItem.parsed.y.toFixed(2)})`;
+                                }
+                            }
+                        }
+                    },
                     scales: {
                         x: {
                             type: 'linear',
@@ -135,6 +175,18 @@
             document.getElementById('noiseValue').textContent = noiseLevel.toFixed(2);
             data = generateData();
             chart.data.datasets[0].data = data;
+            updateRegression();
+        });
+
+        document.getElementById('resetButton').addEventListener('click', () => {
+            document.getElementById('slopeControl').value = 1;
+            document.getElementById('noiseControl').value = 0.1;
+            slope = 1;
+            noiseLevel = 0.1;
+            data = generateData();
+            chart.data.datasets[0].data = data;
+            document.getElementById('slopeValue').textContent = slope.toFixed(1);
+            document.getElementById('noiseValue').textContent = noiseLevel.toFixed(2);
             updateRegression();
         });
 
