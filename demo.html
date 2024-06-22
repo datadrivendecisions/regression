@@ -79,6 +79,7 @@
 
         function createChart() {
             data = generateData();
+            const xMean = data.reduce((sum, point) => sum + point.x, 0) / data.length;
             const yMean = data.reduce((sum, point) => sum + point.y, 0) / data.length;
 
             chart = new Chart(ctx, {
@@ -91,7 +92,7 @@
                         backgroundColor: 'rgba(54, 162, 235, 0.5)',
                     }, {
                         label: 'Regression Model',
-                        data: [{x: 0, y: intercept}, {x: 1, y: slope + intercept}],
+                        data: [{x: 0, y: yMean - slope * xMean}, {x: 1, y: slope * (1 - xMean) + yMean}],
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         showLine: true,
@@ -140,9 +141,12 @@
         }
 
         function updateRegression() {
+            const xMean = data.reduce((sum, point) => sum + point.x, 0) / data.length;
+            const yMean = data.reduce((sum, point) => sum + point.y, 0) / data.length;
+
             chart.data.datasets[1].data = [
-                {x: 0, y: intercept},
-                {x: 1, y: slope + intercept}
+                {x: 0, y: yMean - slope * xMean},
+                {x: 1, y: slope * (1 - xMean) + yMean}
             ];
             chart.update();
             updateStats();
@@ -152,7 +156,7 @@
             const yMean = data.reduce((sum, point) => sum + point.y, 0) / data.length;
             const ssTotal = data.reduce((sum, point) => sum + Math.pow(point.y - yMean, 2), 0);
             const ssResidual = data.reduce((sum, point) => {
-                const yPred = slope * point.x + intercept;
+                const yPred = slope * point.x + (yMean - slope * (data.reduce((sum, point) => sum + point.x, 0) / data.length));
                 return sum + Math.pow(point.y - yPred, 2);
             }, 0);
             const mseRegression = ssResidual / data.length;
