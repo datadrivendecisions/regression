@@ -82,15 +82,16 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-2/3">
             <h1 class="text-2xl font-bold mb-4">Gradient Descent Demo</h1>
             <p class="mb-4">This demo shows how gradient descent works by training a linear model to predict travel time
-                based on the number of stop signs.</p>
+                based on the number of stop signs.</br><sub>Based on this <a class="underline text-blue-600
+                        hover:text-blue-800 visited:text-purple-600"
+                        href="https://youtu.be/QoK1nNAURw4?si=PWc0lzjbino0kdDp" target="_blank">example</a></sub></p>
 
             <canvas id="chart" class="mb-4"></canvas>
 
-            <div class="mb-4">
+            <div class="bg-gray-200 p-2 my-2 rounded mb-4">
+                <div id="regressionLine"></div>
                 <p id="weightDisplay">Weight: 0</p>
-                <p id="optweightDisplay">Optimal Weight: 0</p>
                 <p id="biasDisplay">Bias: 0</p>
-                <p id="optbiasDisplay">Optimal Bias: 0</p>
                 <p id="lossDisplay">Loss: 0</p>
             </div>
 
@@ -201,9 +202,9 @@
                 { x: minX, y: minY },
                 { x: maxX, y: maxY }
             ];
-            document.getElementById('optweightDisplay').textContent = `Optimal Weight: ${optimalWeight.toFixed(4)}`;
-            document.getElementById('optbiasDisplay').textContent = `Optimal Bias: ${optimalBias.toFixed(4)}`;
+            document.getElementById('regressionLine').innerHTML = `<p>Regression line: \\( y = ${optimalWeight.toFixed(4)}x + ${optimalBias.toFixed(4)} \\)</p>`;
             chart.update();
+            return (optimalWeight, optimalBias)
         }
 
         async function gradientDescent() {
@@ -217,7 +218,7 @@
 
                 chart.update();
 
-                await new Promise(resolve => setTimeout(resolve, 20)); // Slow down the loop for visualization
+                await new Promise(resolve => setTimeout(resolve, 5)); // Slow down the loop for visualization
             }
         }
 
