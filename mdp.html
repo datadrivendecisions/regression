@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deterministic vs Randomized MDP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="w-1/3 bg-white p-6 overflow-y-auto">
+            <h2 class="text-2xl font-bold mb-4">
+                MDP Comparison: Use Case & Explanation
+            </h2>
+            <h3 class="text-xl font-semibold mb-2">
+                Use Case: Smart Thermostat Energy Optimization
+            </h3>
+            <p class="mb-4">
+                Imagine you're developing a smart thermostat system for large office
+                buildings, aiming to optimize energy usage while maintaining
+                comfortable temperatures.
+            </p>
+
+            <h3 class="text-xl font-semibold mb-2">
+                Story: The Tale of Two Buildings
+            </h3>
+            <p class="mb-4">
+                In Techville, two identical office buildings installed new smart
+                thermostat systems:
+            </p>
+            <ul class="list-disc list-inside mb-4">
+                <li>
+                    <strong>Deterministic Towers</strong> used a deterministic MDP.
+                </li>
+                <li>
+                    <strong>Random Heights</strong> employed a randomized MDP approach.
+                </li>
+            </ul>
+
+            <h3 class="text-xl font-semibold mb-2">Explanation</h3>
+            <p class="mb-4">The webapp simulates these two approaches:</p>
+            <ol class="list-decimal list-inside mb-4">
+                <li>
+                    <strong>Deterministic MDP:</strong> Next state is entirely
+                    determined by the current state and action.
+                </li>
+                <li>
+                    <strong>Randomized MDP:</strong> Introduces an element of randomness
+                    in state transitions.
+                </li>
+            </ol>
+
+            <h3 class="text-xl font-semibold mb-2">Key Takeaways</h3>
+            <ul class="list-disc list-inside mb-4">
+                <li>
+                    <strong>Exploration vs. Exploitation:</strong> Randomized MDPs allow
+                    more exploration.
+                </li>
+                <li>
+                    <strong>Adaptability:</strong> Randomized MDPs can adapt more easily
+                    to changes.
+                </li>
+                <li>
+                    <strong>Predictability:</strong> Deterministic MDPs offer more
+                    consistent behavior.
+                </li>
+                <li>
+                    <strong>Performance Over Time:</strong> Effectiveness depends on
+                    environment complexity.
+                </li>
+                <li>
+                    <strong>Application Suitability:</strong> Choice depends on specific
+                    requirements.
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-1 p-8 overflow-y-auto">
+            <h1 class="text-3xl font-bold mb-6 text-center">
+                Deterministic vs Randomized MDP
+            </h1>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="epochs" class="block text-sm font-medium text-gray-700">Number of Epochs:</label>
+                    <input type="number" id="epochs" value="100" min="1" max="1000"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+                <div>
+                    <label for="initialTemp" class="block text-sm font-medium text-gray-700">Initial Temperature
+                        (°F):</label>
+                    <input type="number" id="initialTemp" value="70" min="60" max="80"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+                <div>
+                    <label for="targetTempLow" class="block text-sm font-medium text-gray-700">Target Temperature Low
+                        (°F):</label>
+                    <input type="number" id="targetTempLow" value="74" min="60" max="80"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+                <div>
+                    <label for="targetTempHigh" class="block text-sm font-medium text-gray-700">Target Temperature High
+                        (°F):</label>
+                    <input type="number" id="targetTempHigh" value="75" min="60" max="80"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+                <div>
+                    <label for="adjustmentSize" class="block text-sm font-medium text-gray-700">Temperature Adjustment
+                        Size (°F):</label>
+                    <input type="number" id="adjustmentSize" value="3" min="1" max="5"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+                <div>
+                    <label for="randomProbability" class="block text-sm font-medium text-gray-700">Random Action
+                        Probability (%):</label>
+                    <input type="number" id="randomProbability" value="30" min="0" max="100"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+            </div>
+            <button id="runSimulation"
+                class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Run Simulation
+            </button>
+            <div class="mt-8 grid grid-cols-1 gap-8">
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Deterministic MDP (Deterministic Towers)
+                    </h2>
+                    <canvas id="deterministicChart"></canvas>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Randomized MDP (Random Heights)
+                    </h2>
+                    <canvas id="randomizedChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let deterministicChart, randomizedChart;
+
+            function initCharts() {
+                const chartOptions = {
+                    type: "line",
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: "Temperature (°F)",
+                                },
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Time Steps",
+                                },
+                            },
+                        },
+                    },
+                };
+
+                deterministicChart = new Chart(
+                    document.getElementById("deterministicChart"),
+                    {
+                        ...chartOptions,
+                        data: {
+                            labels: [],
+                            datasets: [
+                                {
+                                    label: "Temperature",
+                                    data: [],
+                                    borderColor: "rgb(75, 192, 192)",
+                                    tension: 0.1,
+                                },
+                            ],
+                        },
+                    }
+                );
+
+                randomizedChart = new Chart(
+                    document.getElementById("randomizedChart"),
+                    {
+                        ...chartOptions,
+                        data: {
+                            labels: [],
+                            datasets: [
+                                {
+                                    label: "Temperature",
+                                    data: [],
+                                    borderColor: "rgb(255, 99, 132)",
+                                    tension: 0.1,
+                                },
+                            ],
+                        },
+                    }
+                );
+            }
+
+            function deterministicMDP(
+                epochs,
+                initialTemp,
+                targetLow,
+                targetHigh,
+                adjustmentSize
+            ) {
+                let temp = initialTemp;
+                const data = [temp];
+                for (let i = 1; i < epochs; i++) {
+                    if (temp < targetLow) {
+                        temp += adjustmentSize;
+                    } else if (temp > targetHigh) {
+                        temp -= adjustmentSize;
+                    }
+                    data.push(temp);
+                }
+                return data;
+            }
+
+            function randomizedMDP(
+                epochs,
+                initialTemp,
+                targetLow,
+                targetHigh,
+                adjustmentSize,
+                randomProb
+            ) {
+                let temp = initialTemp;
+                const data = [temp];
+                for (let i = 1; i < epochs; i++) {
+                    if (Math.random() >= randomProb) {
+                        if (temp < targetLow) {
+                            temp += adjustmentSize;
+                        } else if (temp > targetHigh) {
+                            temp -= adjustmentSize;
+                        }
+                    } else {
+                        temp +=
+                            Math.floor(Math.random() * (adjustmentSize * 2 + 1)) -
+                            adjustmentSize;
+                    }
+                    temp = Math.max(60, Math.min(80, temp)); // Keep temperature between 60 and 80
+                    data.push(temp);
+                }
+                return data;
+            }
+
+            function runSimulation() {
+                const epochs = parseInt(document.getElementById("epochs").value);
+                const initialTemp = parseFloat(
+                    document.getElementById("initialTemp").value
+                );
+                const targetLow = parseFloat(
+                    document.getElementById("targetTempLow").value
+                );
+                const targetHigh = parseFloat(
+                    document.getElementById("targetTempHigh").value
+                );
+                const adjustmentSize = parseFloat(
+                    document.getElementById("adjustmentSize").value
+                );
+                const randomProb =
+                    parseFloat(document.getElementById("randomProbability").value) /
+                    100;
+
+                const deterministicData = deterministicMDP(
+                    epochs,
+                    initialTemp,
+                    targetLow,
+                    targetHigh,
+                    adjustmentSize
+                );
+                const randomizedData = randomizedMDP(
+                    epochs,
+                    initialTemp,
+                    targetLow,
+                    targetHigh,
+                    adjustmentSize,
+                    randomProb
+                );
+
+                const labels = Array.from({ length: epochs }, (_, i) => i + 1);
+
+                deterministicChart.data.labels = labels;
+                deterministicChart.data.datasets[0].data = deterministicData;
+                deterministicChart.options.scales.y.min =
+                    Math.min(...deterministicData, ...randomizedData) - 5;
+                deterministicChart.options.scales.y.max =
+                    Math.max(...deterministicData, ...randomizedData) + 5;
+                deterministicChart.update();
+
+                randomizedChart.data.labels = labels;
+                randomizedChart.data.datasets[0].data = randomizedData;
+                randomizedChart.options.scales.y.min =
+                    Math.min(...deterministicData, ...randomizedData) - 5;
+                randomizedChart.options.scales.y.max =
+                    Math.max(...deterministicData, ...randomizedData) + 5;
+                randomizedChart.update();
+            }
+
+            initCharts();
+            document
+                .getElementById("runSimulation")
+                .addEventListener("click", runSimulation);
+        });
+    </script>
+</body>
+
+</html>
