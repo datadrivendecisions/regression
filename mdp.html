@@ -2,81 +2,84 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deterministic vs Randomized MDP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body class="bg-gray-100">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <div class="w-1/3 bg-white p-6 overflow-y-auto">
-            <h2 class="text-2xl font-bold mb-4">
-                MDP Comparison: Use Case & Explanation
-            </h2>
-            <h3 class="text-xl font-semibold mb-2">
-                Use Case: Smart Thermostat Energy Optimization
-            </h3>
-            <p class="mb-4">
-                Imagine you're developing a smart thermostat system for large office
-                buildings, aiming to optimize energy usage while maintaining
-                comfortable temperatures.
-            </p>
+            <h2 class="text-2xl font-bold mb-4">MDP Comparison: Thermostat Optimization</h2>
 
-            <h3 class="text-xl font-semibold mb-2">
-                Story: The Tale of Two Buildings
-            </h3>
-            <p class="mb-4">
-                In Techville, two identical office buildings installed new smart
-                thermostat systems:
-            </p>
+            <h3 class="text-xl font-semibold mb-2">The Tale of Two Buildings</h3>
+            <p class="mb-4">In Techville, two identical office buildings, Deterministic Towers and Random Heights,
+                installed
+                smart thermostat systems based on Markov Decision Processes (MDPs):</p>
+
+            <h3 class="text-xl font-semibold mb-2">MDP Components in Our Scenario</h3>
             <ul class="list-disc list-inside mb-4">
-                <li>
-                    <strong>Deterministic Towers</strong> used a deterministic MDP.
+                <li><strong>Decision Epochs (\(N\)):</strong> Time steps in our simulation, \(N = \{0, 1, \ldots, T\}\),
+                    where T is
+                    the total number of epochs.</li>
+                <li><strong>State Space (\(S\)):</strong> Set of possible temperatures, e.g., \(S = \{60°F, 61°F,
+                    \ldots,
+                    80°F\}\).
                 </li>
-                <li>
-                    <strong>Random Heights</strong> employed a randomized MDP approach.
+                <li><strong>Action Space (\(A(i)\)):</strong> Possible temperature adjustments, e.g., \(A(i) = \{-3°F,
+                    0°F,
+                    +3°F\}\).</li>
+                <li><strong>Action Selection (\(g(·)\)):</strong>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Deterministic Towers: Always selects the action to move towards the target range.</li>
+                        <li>Random Heights: Selects the deterministic action with probability 1 - randomProb, or a
+                            random action
+                            with probability randomProb (e.g. 30%).</li>
+                    </ul>
+                </li>
+                <li><strong>Immediate Reward (\(r_i^n(a)\)):</strong> Could represent energy efficiency or comfort level
+                    at
+                    each
+                    step.</li>
+                <li><strong>Transition Probabilities \(p_{ij}^n(a)\):</strong>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Deterministic Towers: \(p_{ij}^n(a) = 1\) for the next determined state, 0 for others.</li>
+                        <li>Random Heights: Probabilities are distributed based on the randomProb parameter.</li>
+                    </ul>
                 </li>
             </ul>
 
-            <h3 class="text-xl font-semibold mb-2">Explanation</h3>
-            <p class="mb-4">The webapp simulates these two approaches:</p>
-            <ol class="list-decimal list-inside mb-4">
-                <li>
-                    <strong>Deterministic MDP:</strong> Next state is entirely
-                    determined by the current state and action.
-                </li>
-                <li>
-                    <strong>Randomized MDP:</strong> Introduces an element of randomness
-                    in state transitions.
-                </li>
-            </ol>
-
-            <h3 class="text-xl font-semibold mb-2">Key Takeaways</h3>
+            <h3 class="text-xl font-semibold mb-2">Key Differences</h3>
             <ul class="list-disc list-inside mb-4">
-                <li>
-                    <strong>Exploration vs. Exploitation:</strong> Randomized MDPs allow
-                    more exploration.
-                </li>
-                <li>
-                    <strong>Adaptability:</strong> Randomized MDPs can adapt more easily
-                    to changes.
-                </li>
-                <li>
-                    <strong>Predictability:</strong> Deterministic MDPs offer more
-                    consistent behavior.
-                </li>
-                <li>
-                    <strong>Performance Over Time:</strong> Effectiveness depends on
-                    environment complexity.
-                </li>
-                <li>
-                    <strong>Application Suitability:</strong> Choice depends on specific
-                    requirements.
-                </li>
+                <li><strong>Deterministic MDP (Deterministic Towers):</strong> Action selection and state transitions
+                    are fully
+                    predictable.</li>
+                <li><strong>Randomized MDP (Random Heights):</strong> Introduces controlled randomness in action
+                    selection,
+                    leading to more diverse state transitions.</li>
             </ul>
+
+            <h3 class="text-xl font-semibold mb-2">Implications</h3>
+            <ul class="list-disc list-inside mb-4">
+                <li><strong>Exploration vs. Exploitation:</strong> Random Heights explores more of the state space,
+                    potentially
+                    finding better solutions in complex environments.</li>
+                <li><strong>Adaptability:</strong> The randomized approach may adapt better to unexpected changes or
+                    fluctuations in the environment.</li>
+                <li><strong>Predictability:</strong> Deterministic Towers offers more consistent and predictable
+                    behavior, which
+                    might be preferable in some scenarios.</li>
+                <li><strong>Performance:</strong> The effectiveness of each approach depends on the specific
+                    characteristics of
+                    the environment and the desired balance between stability and adaptability.</li>
+            </ul>
+
+            <p class="mt-4">Experiment with the parameters to observe how these MDP concepts play out in practice!</p>
         </div>
 
         <!-- Main content -->
